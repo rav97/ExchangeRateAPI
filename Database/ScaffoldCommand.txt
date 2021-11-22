@@ -1,0 +1,1 @@
+Scaffold-DbContext "Data Source=LAPTOPRAFALA;Initial Catalog=ExchangeDB;Integrated Security=True" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Database -f
