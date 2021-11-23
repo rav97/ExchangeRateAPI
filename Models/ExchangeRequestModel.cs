@@ -13,6 +13,7 @@ namespace ExchangeRateAPI.Models
     public class ExchangeRequestModel
     {
         [Required]
+        [DataType(DataType.Text)]
         [DefaultValue("{\"USD\":\"EUR\"}")]
         [RegularExpression(@"^{(\""[A-Z]{3}\""\ *\:\""[A-Z]{3}\""\,?\ ?)+}$")]
         public string CurrencyCodes { get; set; }
@@ -22,9 +23,10 @@ namespace ExchangeRateAPI.Models
         public DateTime StartDate { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
 
         [Required(ErrorMessage = "Api key must be included")]
+        [DataType(DataType.Text)]
         [ApiKeyValidation]
         public string ApiKey { get; set; }
 

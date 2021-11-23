@@ -1,0 +1,165 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ExchangeRateAPI</name>
+    </assembly>
+    <members>
+        <member name="M:ExchangeRateAPI.Controllers.APIController.Get">
+            <summary>
+            Get new API Key
+            </summary>
+            <remarks>Generates and returns new API Key valid for 6 months</remarks>
+            <response code="200">Returns new API Key string valid for 6 months</response>
+            <response code="500">Server side error prevented generation of new API Key</response>
+        </member>
+        <member name="M:ExchangeRateAPI.Controllers.ExchangeController.Get(ExchangeRateAPI.Models.ExchangeRequestModel)">
+            <summary>
+            Get exchange rates
+            </summary>
+            <remarks>Returns set of exchange rates for given currencies and time period</remarks>
+            <param name="exchangeRequest">Request model consisting of Dictionary(string, string) (where Key is Currency From and Value is Currency To), StartDate, EndDate and Valid API Key</param>
+            <response code="200">Returns list of exchange rates for given currencies and time period</response>
+            <response code="400">Incorrect input data</response>
+            <response code="403">Given API key is expired or invalid</response>
+            <response code="404">There is no data for received request</response>
+            <response code="500">Server side error</response>
+        </member>
+        <member name="T:ExchangeRateAPI.Models.ECB.GenericData">
+            <remarks/>
+        </member>
+        <member name="P:ExchangeRateAPI.Models.ECB.GenericData.Header">
+            <remarks/>
+        </member>
+        <member name="P:ExchangeRateAPI.Models.ECB.GenericData.DataSet">
+            <remarks/>
+        </member>
+        <member name="T:ExchangeRateAPI.Models.ECB.GenericDataHeader">
+            <remarks/>
+        </member>
+        <member name="P:ExchangeRateAPI.Models.ECB.GenericDataHeader.ID">
+            <remarks/>
+        </member>
+        <member name="P:ExchangeRateAPI.Models.ECB.GenericDataHeader.Test">
+            <remarks/>
+        </member>
+        <member name="P:ExchangeRateAPI.Models.ECB.GenericDataHeader.Prepared">
+            <remarks/>
+        </member>
+        <member name="P:ExchangeRateAPI.Models.ECB.GenericDataHeader.Sender">
+            <remarks/>
+        </member>
+        <member name="P:ExchangeRateAPI.Models.ECB.GenericDataHeader.Structure">
+            <remarks/>
+        </member>
+        <member name="T:ExchangeRateAPI.Models.ECB.GenericDataHeaderSender">
+            <remarks/>
+        </member>
+        <member name="P:ExchangeRateAPI.Models.ECB.GenericDataHeaderSender.id">
+            <remarks/>
+        </member>
+        <member name="T:ExchangeRateAPI.Models.ECB.GenericDataHeaderStructure">
+            <remarks/>
+        </member>
+        <member name="P:ExchangeRateAPI.Models.ECB.GenericDataHeaderStructure.Structure">
+            <remarks/>
+        </member>
+        <member name="P:ExchangeRateAPI.Models.ECB.GenericDataHeaderStructure.structureID">
+            <remarks/>
+        </member>
+        <member name="P:ExchangeRateAPI.Models.ECB.GenericDataHeaderStructure.dimensionAtObservation">
+            <remarks/>
+        </member>
+        <member name="T:ExchangeRateAPI.Models.ECB.Structure">
+            <remarks/>
+        </member>
+        <member name="P:ExchangeRateAPI.Models.ECB.Structure.URN">
+            <remarks/>
+        </member>
+        <member name="T:ExchangeRateAPI.Models.ECB.GenericDataDataSet">
+            <remarks/>
+        </member>
+        <member name="P:ExchangeRateAPI.Models.ECB.GenericDataDataSet.Series">
+            <remarks/>
+        </member>
+        <member name="P:ExchangeRateAPI.Models.ECB.GenericDataDataSet.action">
+            <remarks/>
+        </member>
+        <member name="P:ExchangeRateAPI.Models.ECB.GenericDataDataSet.validFromDate">
+            <remarks/>
+        </member>
+        <member name="P:ExchangeRateAPI.Models.ECB.GenericDataDataSet.structureRef">
+            <remarks/>
+        </member>
+        <member name="T:ExchangeRateAPI.Models.ECB.Series">
+            <remarks/>
+        </member>
+        <member name="P:ExchangeRateAPI.Models.ECB.Series.SeriesKey">
+            <remarks/>
+        </member>
+        <member name="P:ExchangeRateAPI.Models.ECB.Series.Attributes">
+            <remarks/>
+        </member>
+        <member name="P:ExchangeRateAPI.Models.ECB.Series.Obs">
+            <remarks/>
+        </member>
+        <member name="T:ExchangeRateAPI.Models.ECB.SeriesValue">
+            <remarks/>
+        </member>
+        <member name="P:ExchangeRateAPI.Models.ECB.SeriesValue.id">
+            <remarks/>
+        </member>
+        <member name="P:ExchangeRateAPI.Models.ECB.SeriesValue.value">
+            <remarks/>
+        </member>
+        <member name="T:ExchangeRateAPI.Models.ECB.SeriesValue1">
+            <remarks/>
+        </member>
+        <member name="P:ExchangeRateAPI.Models.ECB.SeriesValue1.id">
+            <remarks/>
+        </member>
+        <member name="P:ExchangeRateAPI.Models.ECB.SeriesValue1.value">
+            <remarks/>
+        </member>
+        <member name="T:ExchangeRateAPI.Models.ECB.SeriesObs">
+            <remarks/>
+        </member>
+        <member name="P:ExchangeRateAPI.Models.ECB.SeriesObs.ObsDimension">
+            <remarks/>
+        </member>
+        <member name="P:ExchangeRateAPI.Models.ECB.SeriesObs.ObsValue">
+            <remarks/>
+        </member>
+        <member name="P:ExchangeRateAPI.Models.ECB.SeriesObs.Attributes">
+            <remarks/>
+        </member>
+        <member name="T:ExchangeRateAPI.Models.ECB.SeriesObsObsDimension">
+            <remarks/>
+        </member>
+        <member name="P:ExchangeRateAPI.Models.ECB.SeriesObsObsDimension.value">
+            <remarks/>
+        </member>
+        <member name="T:ExchangeRateAPI.Models.ECB.SeriesObsObsValue">
+            <remarks/>
+        </member>
+        <member name="P:ExchangeRateAPI.Models.ECB.SeriesObsObsValue.value">
+            <remarks/>
+        </member>
+        <member name="T:ExchangeRateAPI.Models.ECB.SeriesObsValue">
+            <remarks/>
+        </member>
+        <member name="P:ExchangeRateAPI.Models.ECB.SeriesObsValue.id">
+            <remarks/>
+        </member>
+        <member name="P:ExchangeRateAPI.Models.ECB.SeriesObsValue.value">
+            <remarks/>
+        </member>
+        <member name="M:ExchangeRateAPI.Utility.DBExtension.Set(Microsoft.EntityFrameworkCore.DbContext,System.Type)">
+            <summary>
+            Get non-generic dataset from given Type. Only for simple operations.
+            </summary>
+            <param name="context">DbContext</param>
+            <param name="t">Type of dataset</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

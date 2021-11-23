@@ -1,4 +1,5 @@
-﻿using ExchangeRateAPI.Models.ECB;
+﻿using ExchangeRateAPI.Models;
+using ExchangeRateAPI.Models.ECB;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,6 @@ namespace ExchangeRateAPI.Services.Helpers.Interfaces
 {
     public interface IEcbApiHandler
     {
-        Task<GenericData> GetExchangeData(Dictionary<string, string> currencies, DateTime fromDate, DateTime toDate);
+        Task<List<ExchangeResponseModel>> GetExchangeData(Dictionary<string, string> currencies, DateTime fromDate, DateTime toDate);
     }
 }

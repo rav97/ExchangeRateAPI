@@ -17,6 +17,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -39,7 +40,7 @@ namespace ExchangeRateAPI
             services.AddHttpClient();
 
             services.AddControllers()
-                    .AddNewtonsoftJson();
+                    .AddNewtonsoftJson( options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
             services.AddSwaggerGen(c => { 
                     c.SwaggerDoc("v1", 
@@ -47,6 +48,9 @@ namespace ExchangeRateAPI
                                         Title = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name, 
                                         Version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString() 
                                 });
+                var filePath = Path.Combine(System.AppContext.BaseDirectory, "ExchangeRateAPI.xml");
+                c.IncludeXmlComments(filePath);
+
             });
         }
 

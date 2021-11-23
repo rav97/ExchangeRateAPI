@@ -6,6 +6,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using ExchangeRateAPI.Utility;
 using ExchangeRateAPI.Services.Helpers.Interfaces;
+using ExchangeRateAPI.Mappers;
+using ExchangeRateAPI.Models;
 
 namespace ExchangeRateAPI.Services.Helpers
 {
@@ -18,12 +20,13 @@ namespace ExchangeRateAPI.Services.Helpers
             this._clientFactory = clientFactory;
         }
 
-        public async Task<GenericData> GetExchangeData(Dictionary<string, string> currencies, DateTime fromDate, DateTime toDate)
+        public async Task<List<ExchangeResponseModel>> GetExchangeData(Dictionary<string, string> currencies, DateTime fromDate, DateTime toDate)
         {
             string responseData = "";
             var curr = NormalizeInputCurrency(currencies);
 
-            string requestUri = $@"https://sdw-wsrest.ecb.europa.eu/service/data/EXR/D.{curr.Item1}.{curr.Item2}.SP00.A?startPeriod={fromDate.ToString("yyyy-MM-dd")}&endPeriod={toDate.ToString("yyyy-MM-dd")}";
+            //adding +/- 3 days to request to get information about currency from days off
+            string requestUri = $@"https://sdw-wsrest.ecb.europa.eu/service/data/EXR/D.{curr.Item1}.{curr.Item2}.SP00.A?startPeriod={fromDate.AddDays(-3).ToString("yyyy-MM-dd")}&endPeriod={toDate.AddDays(3).ToString("yyyy-MM-dd")}";
 
             var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
             var client = _clientFactory.CreateClient();
@@ -32,7 +35,12 @@ namespace ExchangeRateAPI.Services.Helpers
             if (response.IsSuccessStatusCode)
                 responseData = await response.Content.ReadAsStringAsync();
 
-            return responseData.XmlDeserializeFromString<GenericData>();
+            var data = responseData.XmlDeserializeFromString<GenericData>();
+            var listedData = data.MappGenericDataToResponseModelList();
+
+            FillGapDates(ref listedData);
+
+            return listedData;
         }
 
         private Tuple<string, string> NormalizeInputCurrency(Dictionary<string, string> currencies)
@@ -60,6 +68,34 @@ namespace ExchangeRateAPI.Services.Helpers
             }
 
             return new Tuple<string, string>(fromCurrency, toCurrency);
+        }
+
+        private void FillGapDates(ref List<ExchangeResponseModel> list)
+        {
+            if (list.Count < 1) return;
+
+            list = list.OrderBy(x => x.DateOfExchangeRate)
+                       .ThenBy(x => x.CurrencyFrom)
+                       .ThenBy(x => x.CurrencyTo)
+                       .ToList();
+
+            var lastItem = list[0];
+            for (int i = 1; i < list.Count; i++)
+            {
+                var i_date = list[i].DateOfExchangeRate;
+                if((i_date - lastItem.DateOfExchangeRate).Days > 1)
+                {
+                    var model = new ExchangeResponseModel
+                    {
+                        CurrencyFrom = lastItem.CurrencyFrom,
+                        CurrencyTo = lastItem.CurrencyTo,
+                        ExchangeRate = lastItem.ExchangeRate,
+                        DateOfExchangeRate = lastItem.DateOfExchangeRate.AddDays(1)
+                    };
+                    list.Insert(i, model);
+                }
+                lastItem = list[i];
+            }
         }
     }
 }
