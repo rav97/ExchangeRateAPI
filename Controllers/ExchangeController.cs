@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using ExchangeRateAPI.Models.Responses;
 
 namespace ExchangeRateAPI.Controllers
 {
@@ -41,11 +42,11 @@ namespace ExchangeRateAPI.Controllers
         /// <response code="404">There is no data for received request</response>
         /// <response code="500">Server side error</response>
         [HttpGet()]
-        [ProducesResponseType(typeof(List<ExchangeResponseModel>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(IActionResult), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(IActionResult), StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(typeof(IActionResult), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(IActionResult), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(Response<List<ExchangeResponseModel>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ForbidResult), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Get([FromQuery]ExchangeRequestModel exchangeRequest)
         {
             try
@@ -60,13 +61,13 @@ namespace ExchangeRateAPI.Controllers
                 if (exchangeRequest.StartDate.Date > DateTime.Now.Date)
                 {
                     _logger.LogInformation("Received StartDate from future.");
-                    return NotFound();
+                    return NotFound(new ErrorResponse("Data not found", new ApiError { Key = nameof(exchangeRequest.StartDate), Message = "Given value refers to future"}));
                 }
 
                 if (exchangeRequest.StartDate > exchangeRequest.EndDate)
                 {
                     _logger.LogInformation("Received StartDate greater than EndDate.");
-                    return BadRequest();
+                    return BadRequest(new ErrorResponse($"Data valiation failed", new ApiError { Key = nameof(exchangeRequest.StartDate), Message = $"{ nameof(exchangeRequest.StartDate) } is greater than { nameof(exchangeRequest.EndDate) }" }));
                 }
                 #endregion
 
@@ -82,12 +83,12 @@ namespace ExchangeRateAPI.Controllers
                                                                              exchangeRequest.StartDate,
                                                                              exchangeRequest.EndDate.Value);
 
-                if(localData.Count == (exchangeRequest.CurrencyCodesDict.Count * (exchangeRequest.EndDate.Value - exchangeRequest.StartDate).Days + 1))
+                if(localData.Count == (exchangeRequest.CurrencyCodesDict.Count * ((exchangeRequest.EndDate.Value - exchangeRequest.StartDate).Days + 1)))
                 {
                     response = localData.MappExchangeRatesToResponseModelList();
                     _logger.LogInformation("Local database has requested data");
                     _logger.LogInformation("Exchange rates response sent.");
-                    return Ok(response);
+                    return Ok(new Response<List<ExchangeResponseModel>>(response));
                 }
 
                 #endregion
@@ -108,16 +109,16 @@ namespace ExchangeRateAPI.Controllers
                 if (response.Count < 1)
                 {
                     _logger.LogInformation("Data not found for given request.");
-                    return NotFound();
+                    return NotFound(new ErrorResponse("Data not found", new ApiError { Key = nameof(exchangeRequest.StartDate), Message = "Given value refers to future" }));
                 }
 
                 _logger.LogInformation("Exchange rates response sent.");
-                return Ok(response);
+                return Ok(new Response<List<ExchangeResponseModel>>(response));
             }
             catch(Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
-                return StatusCode(500);
+                return StatusCode(500, new ErrorResponse("An exception occured during processing"));
             }
         }
     }

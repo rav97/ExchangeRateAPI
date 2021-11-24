@@ -1,4 +1,5 @@
 using ExchangeRateAPI.Database;
+using ExchangeRateAPI.Models.Responses;
 using ExchangeRateAPI.Services.Helpers;
 using ExchangeRateAPI.Services.Helpers.Interfaces;
 using ExchangeRateAPI.Services.Manager;
@@ -38,6 +39,21 @@ namespace ExchangeRateAPI
             AddScopeds(services);
 
             services.AddHttpClient();
+
+            services.PostConfigure<ApiBehaviorOptions>(options =>
+            {
+                options.InvalidModelStateResponseFactory = (actionContext) =>
+                {
+                    var errors = actionContext.ModelState
+                                    .Where(e => e.Value.Errors.Count > 0)
+                                    .Select(e => new ApiError { Key = e.Key, Message = e.Value.Errors.First().ErrorMessage })
+                                    .ToArray();
+
+                    var response = new ErrorResponse("Data validation failed", errors);
+
+                    return new BadRequestObjectResult(response);
+                };
+            });
 
             services.AddControllers()
                     .AddNewtonsoftJson( options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);

@@ -74,9 +74,9 @@ namespace ExchangeRateAPI.Services.Helpers
         {
             if (list.Count < 1) return;
 
-            list = list.OrderBy(x => x.DateOfExchangeRate)
-                       .ThenBy(x => x.CurrencyFrom)
+            list = list.OrderBy(x => x.CurrencyFrom)
                        .ThenBy(x => x.CurrencyTo)
+                       .ThenBy(x => x.DateOfExchangeRate)
                        .ToList();
 
             var lastItem = list[0];
