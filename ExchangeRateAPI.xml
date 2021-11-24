@@ -20,7 +20,6 @@
             <param name="exchangeRequest">Request model consisting of Dictionary(string, string) (where Key is Currency From and Value is Currency To), StartDate, EndDate and Valid API Key</param>
             <response code="200">Returns list of exchange rates for given currencies and time period</response>
             <response code="400">Incorrect input data</response>
-            <response code="403">Given API key is expired or invalid</response>
             <response code="404">There is no data for received request</response>
             <response code="500">Server side error</response>
         </member>

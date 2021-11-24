@@ -73,14 +73,25 @@ namespace ExchangeRateAPI.Utility
 
         public static object XmlDeserializeFromString(this string objectData, Type type)
         {
-            var serializer = new XmlSerializer(type);
-            object result;
+            if (objectData == null || objectData == "")
+                return null;
 
-            using (TextReader reader = new StringReader(objectData))
+            object result = null;
+
+            try
             {
-                result = serializer.Deserialize(reader);
-            }
+                var serializer = new XmlSerializer(type);
 
+
+                using (TextReader reader = new StringReader(objectData))
+                {
+                    result = serializer.Deserialize(reader);
+                }
+            }
+            catch
+            {
+                return null;
+            }
             return result;
         }
 

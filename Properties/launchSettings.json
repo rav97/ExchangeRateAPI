@@ -20,7 +20,7 @@
     "ExchangeRateAPI": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "weatherforecast",
+      "launchUrl": "exchangeRateAPI",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

@@ -33,6 +33,13 @@ namespace ExchangeRateAPI
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>().UseSerilog();
+                    webBuilder.ConfigureKestrel(serverOptions =>
+                    {
+                        serverOptions.ConfigureHttpsDefaults(configureOptions: co =>
+                        {
+                            co.SslProtocols = System.Security.Authentication.SslProtocols.Tls12;
+                        });
+                    });
                 });
     }
 }

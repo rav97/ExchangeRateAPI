@@ -14,32 +14,39 @@ namespace ExchangeRateAPI.Mappers
         {
             List<ExchangeResponseModel> result = new List<ExchangeResponseModel>();
 
-            foreach (var ser in data.DataSet.Series)
+            try
             {
-                string fromCurr = null, toCurr = null;
-                foreach (var key in ser.SeriesKey)
+                if (data != null)
                 {
-                    if (key.id == "CURRENCY")
-                        fromCurr = key.value;
-                    if (key.id == "CURRENCY_DENOM")
-                        toCurr = key.value;
-
-                    if (fromCurr != null && toCurr != null)
-                        break;
-                }
-
-                foreach (var obs in ser.Obs)
-                {
-                    ExchangeResponseModel item = new ExchangeResponseModel()
+                    foreach (var ser in data.DataSet.Series)
                     {
-                        CurrencyFrom = fromCurr,
-                        CurrencyTo = toCurr,
-                        DateOfExchangeRate = obs.ObsDimension.value,
-                        ExchangeRate = obs.ObsValue.value
-                    };
-                    result.Add(item);
+                        string fromCurr = null, toCurr = null;
+                        foreach (var key in ser.SeriesKey)
+                        {
+                            if (key.id == "CURRENCY")
+                                fromCurr = key.value;
+                            if (key.id == "CURRENCY_DENOM")
+                                toCurr = key.value;
+
+                            if (fromCurr != null && toCurr != null)
+                                break;
+                        }
+
+                        foreach (var obs in ser.Obs)
+                        {
+                            ExchangeResponseModel item = new ExchangeResponseModel()
+                            {
+                                CurrencyFrom = fromCurr,
+                                CurrencyTo = toCurr,
+                                DateOfExchangeRate = obs.ObsDimension.value,
+                                ExchangeRate = obs.ObsValue.value
+                            };
+                            result.Add(item);
+                        }
+                    }
                 }
             }
+            catch { }
 
             return result;
         }

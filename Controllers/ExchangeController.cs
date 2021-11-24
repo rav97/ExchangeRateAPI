@@ -38,13 +38,11 @@ namespace ExchangeRateAPI.Controllers
         /// <param name="exchangeRequest">Request model consisting of Dictionary(string, string) (where Key is Currency From and Value is Currency To), StartDate, EndDate and Valid API Key</param>
         /// <response code="200">Returns list of exchange rates for given currencies and time period</response>
         /// <response code="400">Incorrect input data</response>
-        /// <response code="403">Given API key is expired or invalid</response>
         /// <response code="404">There is no data for received request</response>
         /// <response code="500">Server side error</response>
         [HttpGet()]
         [ProducesResponseType(typeof(Response<List<ExchangeResponseModel>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ForbidResult), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Get([FromQuery]ExchangeRequestModel exchangeRequest)
@@ -74,7 +72,7 @@ namespace ExchangeRateAPI.Controllers
                 if (!_apiKeysRepository.CheckKey(exchangeRequest.ApiKey))
                 {
                     _logger.LogInformation("Received invalid ApiKey");
-                    return Forbid();
+                    return BadRequest(new ErrorResponse("Given API Key is expired or invalid"));
                 }
 
                 #region [ LOCAL DATA REQUEST ]
@@ -109,7 +107,7 @@ namespace ExchangeRateAPI.Controllers
                 if (response.Count < 1)
                 {
                     _logger.LogInformation("Data not found for given request.");
-                    return NotFound(new ErrorResponse("Data not found", new ApiError { Key = nameof(exchangeRequest.StartDate), Message = "Given value refers to future" }));
+                    return NotFound(new ErrorResponse("Data not found"));
                 }
 
                 _logger.LogInformation("Exchange rates response sent.");
