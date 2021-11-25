@@ -14,8 +14,9 @@ namespace ExchangeRateAPI.Models
     {
         [Required]
         [DataType(DataType.Text)]
-        [DefaultValue("{\"USD\":\"EUR\"}")]
+        [DefaultValue("{\"USD\":\"EUR\"}")] // for example
         [RegularExpression(@"^{(\""[A-Z]{3}\""\ *\:\""[A-Z]{3}\""\,?\ ?)+}$")]
+        [CurrencyCodesValidation]
         public string CurrencyCodes { get; set; }
 
         [Required]

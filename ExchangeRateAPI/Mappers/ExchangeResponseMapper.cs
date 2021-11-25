@@ -10,7 +10,7 @@ namespace ExchangeRateAPI.Mappers
 {
     public static class ExchangeResponseMapper
     {
-        public static List<ExchangeResponseModel> MappGenericDataToResponseModelList(this GenericData data)
+        public static List<ExchangeResponseModel> MappGenericDataToResponseModelList(this GenericData data, Dictionary<string,string> currencies)
         {
             List<ExchangeResponseModel> result = new List<ExchangeResponseModel>();
 
@@ -32,16 +32,20 @@ namespace ExchangeRateAPI.Mappers
                                 break;
                         }
 
-                        foreach (var obs in ser.Obs)
+                        //ECB API returns cartesian sets, this API is more precise, so need to exclude currency rates that wasn't requested
+                        if (currencies[fromCurr] == toCurr)
                         {
-                            ExchangeResponseModel item = new ExchangeResponseModel()
+                            foreach (var obs in ser.Obs)
                             {
-                                CurrencyFrom = fromCurr,
-                                CurrencyTo = toCurr,
-                                DateOfExchangeRate = obs.ObsDimension.value,
-                                ExchangeRate = obs.ObsValue.value
-                            };
-                            result.Add(item);
+                                ExchangeResponseModel item = new ExchangeResponseModel()
+                                {
+                                    CurrencyFrom = fromCurr,
+                                    CurrencyTo = toCurr,
+                                    DateOfExchangeRate = obs.ObsDimension.value,
+                                    ExchangeRate = obs.ObsValue.value
+                                };
+                                result.Add(item);
+                            }
                         }
                     }
                 }

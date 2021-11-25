@@ -65,6 +65,9 @@ namespace ExchangeRateAPI.Services.Repositories
                            .Where(r => toCurr.Contains(r.CurrencyTo))
                            .ToList();
 
+            //ECB API returns cartesian sets, this API is more precise, so need to exclude currency rates that wasn't requested
+            result.RemoveAll(x => currencies[x.CurrencyFrom] != x.CurrencyTo);
+
             return result;
         }
     }

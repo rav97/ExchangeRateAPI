@@ -36,7 +36,7 @@ namespace ExchangeRateAPI.Services.Helpers
                 responseData = await response.Content.ReadAsStringAsync();
 
             var data = responseData.XmlDeserializeFromString<GenericData>();
-            var listedData = data.MappGenericDataToResponseModelList();
+            var listedData = data.MappGenericDataToResponseModelList(currencies);
 
             FillGapDates(ref listedData);
 
