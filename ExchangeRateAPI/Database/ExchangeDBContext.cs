@@ -19,8 +19,8 @@ namespace ExchangeRateAPI.Database
         }
 
         public virtual DbSet<ApiKey> ApiKeys { get; set; }
-        public virtual DbSet<Currency> Currencies { get; set; }
         public virtual DbSet<ExchangeRate> ExchangeRates { get; set; }
+        public virtual DbSet<Log> Logs { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -57,19 +57,6 @@ namespace ExchangeRateAPI.Database
                     .HasColumnName("valid_to");
             });
 
-            modelBuilder.Entity<Currency>(entity =>
-            {
-                entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.CurrencyCode)
-                    .HasMaxLength(3)
-                    .HasColumnName("currency_code");
-
-                entity.Property(e => e.CurrencyName)
-                    .HasMaxLength(150)
-                    .HasColumnName("currency_name");
-            });
-
             modelBuilder.Entity<ExchangeRate>(entity =>
             {
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -91,6 +78,11 @@ namespace ExchangeRateAPI.Database
                 entity.Property(e => e.ExchangeRate1)
                     .HasColumnType("decimal(19, 4)")
                     .HasColumnName("exchange_rate");
+            });
+
+            modelBuilder.Entity<Log>(entity =>
+            {
+                entity.Property(e => e.TimeStamp).HasColumnType("datetime");
             });
 
             OnModelCreatingPartial(modelBuilder);
