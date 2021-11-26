@@ -36,7 +36,7 @@ namespace ExchangeRateAPI.Services.Repositories
                     var createTime = DateTime.ParseExact(createPart, "HH:mm:ss:fff", System.Globalization.CultureInfo.InvariantCulture);
                     var endDate = DateTime.ParseExact(validPart, "yy.MM.dd", System.Globalization.CultureInfo.InvariantCulture);
 
-                    if (dbKey.CreateDate.TimeOfDay == createTime.TimeOfDay)
+                    if ((dbKey.CreateDate.TimeOfDay - createTime.TimeOfDay).Milliseconds < 1000)
                         if (dbKey.ValidTo.Date == endDate.Date)
                             return true;
                 }

@@ -20,6 +20,7 @@ namespace ExchangeRateAPI.IntegrationTests
 
         #region [ HELPFUL METHODS ]
 
+        #warning REPLACE API KEY WITH WALID VALUE
         private string GetRequestString(Dictionary<string, string> currencies, DateTime startDate, DateTime? endDate = null, string apiKey = @"MTE6Mzc6MTU6NDM3LTIyLjA1LjE5")
         {
             var CurrencyCodes = WebUtility.UrlEncode(JsonConvert.SerializeObject(currencies));
