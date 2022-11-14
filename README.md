@@ -11,7 +11,7 @@ ASP.NET core REST API to retrieve exchange rates for the given time periods. Sou
 - MS SQL Server
 - Entity Framework Core
 - Swashbuckle Swagger
-- Newtonsoft.Jsoon
+- Newtonsoft.Json
 - Serilog
 - XUnit
 
